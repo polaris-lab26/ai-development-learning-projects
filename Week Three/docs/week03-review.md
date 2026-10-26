@@ -14,4 +14,5 @@
 ## Remaining verification
 
 - A clean-clone installation and run has not been performed.
-- The scaffold and status-test changes have separate local commits. The timestamp-test/review-record commit, push, pull request, and merge remain pending at the time of this review.
+- The scaffold and test fixes have separate commits and are pushed to `origin/master`.
+- A pull request and merge have not been completed; the coursework review-and-merge step remains outstanding.
