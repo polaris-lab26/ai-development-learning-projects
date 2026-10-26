@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% set active_page = 'new_task' %}
+{% block title %}New task · Atlantic Environmental Research Unit{% endblock %}
+{% block main_attributes %} class="form-page"{% endblock %}
+{% block content %}
+        <div class="breadcrumb"><a href="{{ url_for('index') }}">Tasks</a><span aria-hidden="true">/</span><span>New task</span></div>
+        <section class="form-intro">
+          <p class="eyebrow">Fieldwork &amp; operations</p>
+          <h1>Create a task</h1>
+          <p>Give the next piece of research a clear starting point.</p>
+        </section>
+
+        <div class="form-card">
+          {% if errors %}
+            <div class="error-list" role="alert" aria-labelledby="error-heading">
+              <strong id="error-heading">Please review the following</strong>
+              <ul>
+                {% for error in errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <form method="post" action="{{ url_for('create_task') }}">
+            <div class="form-field">
+              <label for="title">Task title <span class="required-mark" aria-hidden="true">*</span></label>
+              <input class="form-control form-control--title" id="title" name="title" value="{{ form.title }}" maxlength="200" required aria-describedby="title-hint">
+              <p class="field-hint" id="title-hint">Keep it concise and specific · up to 200 characters</p>
+            </div>
+
+            <div class="form-field">
+              <label for="description">Description <span class="optional-label">Optional</span></label>
+              <textarea class="form-control form-control--textarea" id="description" name="description" rows="5" aria-describedby="description-hint">{{ form.description }}</textarea>
+              <p class="field-hint" id="description-hint">Add context, location, or a note for the team.</p>
+            </div>
+
+            <div class="form-field">
+              <label for="due_date">Due date <span class="optional-label">Optional</span></label>
+              <input class="form-control" id="due_date" name="due_date" value="{{ form.due_date }}" placeholder="YYYY-MM-DD" aria-describedby="due-date-hint">
+              <p class="field-hint" id="due-date-hint">Use YYYY-MM-DD, for example 2026-06-05.</p>
+            </div>
+
+            <div class="form-footer">
+              <p class="form-note">New tasks begin with <span class="status-pill status-pill--todo">To do</span></p>
+              <div class="form-actions">
+                <a class="button button--quiet" href="{{ url_for('index') }}">Cancel</a>
+                <button class="button button--primary" type="submit">Create task <span aria-hidden="true">→</span></button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <p class="page-caption">A clear title, useful context, and a realistic date help keep fieldwork on track.</p>
+{% endblock %}

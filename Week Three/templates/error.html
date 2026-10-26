@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ status_code }} · Atlantic Environmental Research Unit{% endblock %}
+{% block main_attributes %} class="error-page"{% endblock %}
+{% block content %}
+        <section class="error-card">
+          <p class="eyebrow">A small detour · {{ status_code }}</p>
+          <h1>{{ heading }}</h1>
+          <p>{{ message }}</p>
+          <a class="button button--primary" href="{{ url_for('index') }}">Return to tasks <span aria-hidden="true">→</span></a>
+        </section>
+{% endblock %}

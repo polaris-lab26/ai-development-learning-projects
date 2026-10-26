@@ -1,0 +1,21 @@
+# Virtual environments
+.venv/
+venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Test caches
+.pytest_cache/
+.pytest-tmp/
+
+# Local SQLite database files
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db

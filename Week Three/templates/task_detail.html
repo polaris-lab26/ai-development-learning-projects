@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% set active_page = 'tasks' %}
+{% block title %}{{ task.title }} · Atlantic Environmental Research Unit{% endblock %}
+{% block main_attributes %} class="detail-page"{% endblock %}
+{% block content %}
+        <div class="breadcrumb"><a href="{{ url_for('index') }}">Tasks</a><span aria-hidden="true">/</span><span>{{ task.title }}</span></div>
+
+        <section class="detail-hero">
+          <div>
+            <p class="eyebrow">Research task · #{{ task.id }}</p>
+            <h1>{{ task.title }}</h1>
+            {% if task.status == 'todo' %}
+              <span class="status-pill status-pill--todo"><span class="status-dot status-dot--todo"></span> To do</span>
+            {% elif task.status == 'in_progress' %}
+              <span class="status-pill status-pill--progress"><span class="status-dot status-dot--progress"></span> In progress</span>
+            {% elif task.status == 'done' %}
+              <span class="status-pill status-pill--done"><span class="status-dot status-dot--done"></span> Complete</span>
+            {% endif %}
+          </div>
+          <a class="button button--quiet" href="{{ url_for('index') }}">← Back to tasks</a>
+        </section>
+
+        <div class="detail-grid">
+          <section class="detail-card detail-card--description" aria-labelledby="description-heading">
+            <p class="eyebrow">Task overview</p>
+            <h2 id="description-heading">Field notes</h2>
+            {% if task.description %}
+              <p class="description-text">{{ task.description }}</p>
+            {% else %}
+              <p class="description-text description-text--empty">No description has been added to this task.</p>
+            {% endif %}
+          </section>
+
+          <aside class="detail-card detail-card--meta" aria-labelledby="information-heading">
+            <p class="eyebrow">At a glance</p>
+            <h2 id="information-heading">Task information</h2>
+            <dl class="metadata-list">
+              <div class="metadata-row">
+                <dt>Due date</dt>
+                <dd>{{ task.due_date or 'Not set' }}</dd>
+              </div>
+              <div class="metadata-row">
+                <dt>Created</dt>
+                <dd>{{ task.created_at }} UTC</dd>
+              </div>
+              <div class="metadata-row">
+                <dt>Task ID</dt>
+                <dd>#{{ task.id }}</dd>
+              </div>
+            </dl>
+          </aside>
+
+          <section class="detail-card detail-card--status" aria-labelledby="status-heading">
+            <div>
+              <p class="eyebrow">Progress</p>
+              <h2 id="status-heading">Update status</h2>
+              <p class="section-description">Reflect the current stage of this research task.</p>
+            </div>
+            <form class="status-form" method="post" action="{{ url_for('update_task_status', task_id=task.id) }}">
+              <label class="visually-hidden" for="status">Task status</label>
+              <select class="form-control status-select" id="status" name="status">
+                {% for status in statuses %}
+                  <option value="{{ status }}" {% if status == task.status %}selected{% endif %}>
+                    {% if status == 'todo' %}To do{% elif status == 'in_progress' %}In progress{% elif status == 'done' %}Complete{% endif %}
+                  </option>
+                {% endfor %}
+              </select>
+              <button class="button button--primary" type="submit">Save status <span aria-hidden="true">→</span></button>
+            </form>
+          </section>
+        </div>
+{% endblock %}

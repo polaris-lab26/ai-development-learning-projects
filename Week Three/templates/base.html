@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#faf7f2">
+    <title>{% block title %}Atlantic Environmental Research Unit{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="{{ url_for('index') }}" aria-label="Atlantic Environmental Research Unit home">
+          <span class="brand-mark" aria-hidden="true">✳</span>
+          <span class="brand-name">Atlantic Environmental <span>Research Unit</span></span>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a class="nav-link{% if active_page == 'tasks' %} nav-link--active{% endif %}" href="{{ url_for('index') }}"{% if active_page == 'tasks' %} aria-current="page"{% endif %}>Tasks</a>
+          <a class="nav-link{% if active_page == 'new_task' %} nav-link--active{% endif %}" href="{{ url_for('new_task_form') }}"{% if active_page == 'new_task' %} aria-current="page"{% endif %}>New task</a>
+        </nav>
+        <span class="header-note">Research operations</span>
+      </header>
+
+      <main{% block main_attributes %}{% endblock %}>
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer class="site-footer">
+        <span>Atlantic Environmental Research Unit</span>
+        <span>Careful work for a living coastline.</span>
+      </footer>
+    </div>
+  </body>
+</html>
