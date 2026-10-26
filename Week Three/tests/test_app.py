@@ -1,5 +1,6 @@
 import sqlite3
 from contextlib import closing
+from datetime import datetime
 
 import pytest
 
@@ -62,6 +63,13 @@ def test_create_task_trims_values_and_redirects_to_detail(client):
     assert b"Collect shoreline samples." in detail.data
     assert b"2028-02-29" in detail.data
     assert b"To do" in detail.data
+
+    with closing(sqlite3.connect(app.config["DATABASE"])) as connection:
+        created_at = connection.execute(
+            "SELECT created_at FROM tasks WHERE id = 1"
+        ).fetchone()[0]
+    parsed_created_at = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
+    assert parsed_created_at.strftime("%Y-%m-%d %H:%M:%S") == created_at
 
 
 def test_blank_optional_fields_are_stored_as_null(client):
