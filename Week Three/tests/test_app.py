@@ -105,6 +105,31 @@ def test_invalid_task_input_is_rejected_without_inserting(client, data, message)
     assert task_count(app.config["DATABASE"]) == 0
 
 
+def test_due_date_rejects_february_29_in_a_non_leap_year(client):
+    response = client.post(
+        "/task",
+        data={"title": "Check tide gauge", "due_date": "2027-02-29"},
+    )
+
+    assert response.status_code == 400
+    assert b"Due date must be" in response.data
+    assert task_count(app.config["DATABASE"]) == 0
+
+
+def test_due_date_rejects_non_ascii_digits(client):
+    response = client.post(
+        "/task",
+        data={
+            "title": "Check tide gauge",
+            "due_date": "\u0662\u0660\u0662\u0668-\u0660\u0662-\u0662\u0669",
+        },
+    )
+
+    assert response.status_code == 400
+    assert b"Due date must be" in response.data
+    assert task_count(app.config["DATABASE"]) == 0
+
+
 def test_invalid_task_input_preserves_submitted_values(client):
     response = client.post(
         "/task",
