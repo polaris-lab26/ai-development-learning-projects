@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% set active_page = 'new_project' %}
+{% block title %}New project · Atlantic Environmental Research Unit{% endblock %}
+{% block main_attributes %} class="form-page"{% endblock %}
+{% block content %}
+        <div class="breadcrumb"><a href="{{ url_for('index') }}">Projects</a><span aria-hidden="true">/</span><span>Project</span></div>
+        <section class="form-intro">
+          <p class="eyebrow">Research operations</p>
+          <h1>{% if project_id %}Update project{% else %}Create a project{% endif %}</h1>
+        </section>
+        <div class="form-card">
+          {% if errors %}
+            <div class="error-list" role="alert">
+              <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+            </div>
+          {% endif %}
+          <form method="post" action="{% if project_id %}{{ url_for('update_project', project_id=project_id) }}{% else %}{{ url_for('create_project') }}{% endif %}">
+            <div class="form-field">
+              <label for="name">Project name</label>
+              <input class="form-control" id="name" name="name" value="{{ name }}" required>
+            </div>
+            <div class="form-footer">
+              <div class="form-actions">
+                <a class="button button--quiet" href="{{ url_for('index') }}">Cancel</a>
+                <button class="button button--primary" type="submit">{% if project_id %}Save project{% else %}Create project{% endif %}</button>
+              </div>
+            </div>
+          </form>
+        </div>
+{% endblock %}

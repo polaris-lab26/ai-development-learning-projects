@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set active_page = 'projects' %}
+{% block title %}New task · Atlantic Environmental Research Unit{% endblock %}
+{% block main_attributes %} class="form-page"{% endblock %}
+{% block content %}
+        <div class="breadcrumb"><a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.name }}</a><span aria-hidden="true">/</span><span>New task</span></div>
+        <section class="form-intro">
+          <p class="eyebrow">Project task</p>
+          <h1>Create a task</h1>
+        </section>
+        <div class="form-card">
+          {% if errors %}
+            <div class="error-list" role="alert">
+              <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+            </div>
+          {% endif %}
+          <form method="post" action="{{ url_for('create_task', project_id=project.id) }}">
+            <div class="form-field">
+              <label for="title">Task title</label>
+              <input class="form-control" id="title" name="title" value="{{ form.get('title', '') }}" maxlength="200" required>
+            </div>
+            <div class="form-field">
+              <label for="due_date">Due date <span class="optional-label">Optional</span></label>
+              <input class="form-control" id="due_date" name="due_date" value="{{ form.get('due_date', '') }}" placeholder="YYYY-MM-DD">
+            </div>
+            <p class="form-note">New tasks begin with <span class="status-pill status-pill--todo">To do</span></p>
+            <div class="form-actions">
+              <a class="button button--quiet" href="{{ url_for('project_detail', project_id=project.id) }}">Cancel</a>
+              <button class="button button--primary" type="submit">Create task</button>
+            </div>
+          </form>
+        </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% set active_page = 'projects' %}
+{% block title %}Projects · Atlantic Environmental Research Unit{% endblock %}
+{% block content %}
+        <section class="hero">
+          <div>
+            <p class="eyebrow">Research operations</p>
+            <h1>Projects and tasks</h1>
+            <p class="hero-copy">Keep project work together in one place.</p>
+          </div>
+          <a class="button button--primary" href="{{ url_for('new_project_form') }}">New project</a>
+        </section>
+
+        <section class="task-section" aria-labelledby="projects-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Workspace</p>
+              <h2 id="projects-heading">Projects</h2>
+            </div>
+          </div>
+          {% if projects %}
+            <div class="task-list">
+              {% for project in projects %}
+                <a class="task-card" href="{{ url_for('project_detail', project_id=project.id) }}">
+                  <span class="task-card__main">
+                    <span class="task-card__title">{{ project.name }}</span>
+                    <span class="task-card__meta">
+                      <span class="task-meta-item">{{ project.task_count }} tasks</span>
+                      <span class="task-meta-item">Created {{ project.created_at }}</span>
+                    </span>
+                  </span>
+                  <span class="task-chevron" aria-hidden="true">↗</span>
+                </a>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-state">
+              <h3>No projects yet.</h3>
+              <p>Create a project before adding its tasks.</p>
+              <a class="button button--primary" href="{{ url_for('new_project_form') }}">Create a project</a>
+            </div>
+          {% endif %}
+        </section>
+{% endblock %}
