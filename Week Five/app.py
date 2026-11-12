@@ -25,8 +25,8 @@ def get_db():
     """Return this application context's SQLite connection."""
     if "db" not in g:
         g.db = sqlite3.connect(app.config["DATABASE"])
-        g.db.row_factory = sqlite3.Row
         g.db.execute("PRAGMA foreign_keys = ON")
+        g.db.row_factory = sqlite3.Row
     return g.db
 
 
