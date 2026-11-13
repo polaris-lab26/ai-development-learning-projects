@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% set active_page = 'projects' %}
+{% block title %}{{ project.name }} · Atlantic Environmental Research Unit{% endblock %}
+{% block main_attributes %} class="detail-page"{% endblock %}
+{% block content %}
+        <div class="breadcrumb"><a href="{{ url_for('index') }}">Projects</a><span aria-hidden="true">/</span><span>{{ project.name }}</span></div>
+        <section class="detail-hero">
+          <div>
+            <p class="eyebrow">Project · #{{ project.id }}</p>
+            <h1>{{ project.name }}</h1>
+            <p>Created {{ project.created_at }}</p>
+          </div>
+          <a class="button button--primary" href="{{ url_for('new_task_form', project_id=project.id) }}">New task</a>
+        </section>
+
+        <section class="detail-card">
+          <h2>Update project name</h2>
+          <form method="post" action="{{ url_for('update_project', project_id=project.id) }}">
+            <div class="form-field">
+              <label for="name">Project name</label>
+              <input class="form-control" id="name" name="name" value="{{ project.name }}" required>
+            </div>
+            <button class="button button--primary" type="submit">Save project</button>
+          </form>
+        </section>
+
+        <section class="task-section" aria-labelledby="tasks-heading">
+          <div class="section-heading"><h2 id="tasks-heading">Tasks</h2></div>
+          {% if tasks %}
+            <div class="task-list">
+              {% for task in tasks %}
+                <a class="task-card" href="{{ url_for('task_detail', task_id=task.id) }}">
+                  <span class="task-card__main">
+                    <span class="task-card__title">{{ task.title }}</span>
+                    <span class="task-card__meta">
+                      <span class="task-meta-item">{{ task.status }}</span>
+                      <span class="task-meta-item">Due {{ task.due_date or 'not set' }}</span>
+                    </span>
+                  </span>
+                  <span class="task-chevron" aria-hidden="true">↗</span>
+                </a>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p>No tasks in this project yet.</p>
+          {% endif %}
+        </section>
+{% endblock %}

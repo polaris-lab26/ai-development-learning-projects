@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% set active_page = 'projects' %}
+{% block title %}{{ task.title }} · Atlantic Environmental Research Unit{% endblock %}
+{% block main_attributes %} class="detail-page"{% endblock %}
+{% block content %}
+        <div class="breadcrumb"><a href="{{ url_for('project_detail', project_id=task.project_id) }}">{{ task.project_name }}</a><span aria-hidden="true">/</span><span>{{ task.title }}</span></div>
+        <section class="detail-hero">
+          <div>
+            <p class="eyebrow">Task · #{{ task.id }}</p>
+            <h1>{{ task.title }}</h1>
+            <p>Project: {{ task.project_name }}</p>
+          </div>
+        </section>
+        <section class="detail-card">
+          <h2>Update task</h2>
+          {% if errors %}
+            <div class="error-list" role="alert">
+              <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+            </div>
+          {% endif %}
+          <form method="post" action="{{ url_for('update_task', task_id=task.id) }}">
+            <div class="form-field">
+              <label for="title">Task title</label>
+              <input class="form-control" id="title" name="title" value="{{ task.title }}" maxlength="200" required>
+            </div>
+            <div class="form-field">
+              <label for="status">Status</label>
+              <select class="form-control" id="status" name="status">
+                {% for status in statuses %}
+                  <option value="{{ status }}" {% if status == task.status %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="due_date">Due date <span class="optional-label">Optional</span></label>
+              <input class="form-control" id="due_date" name="due_date" value="{{ task.due_date or '' }}" placeholder="YYYY-MM-DD">
+            </div>
+            <button class="button button--primary" type="submit">Save task</button>
+          </form>
+        </section>
+{% endblock %}
