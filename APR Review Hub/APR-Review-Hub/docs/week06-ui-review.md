@@ -40,8 +40,8 @@ The before state is the dated 19 Nov screenshot set and review notes: the interf
 - Meaningful panel/control borders `#8a8163` are 3.13:1 on cream and 3.42:1 on panel. The evergreen focus outline has at least 10.47:1 against cream.
 - Template review and route tests confirm visible labels associate with form controls; status badges show both an icon and a word.
 - CSS provides `:focus-visible`; the mobile menu has an Escape handler and focus restoration; the native modal dialog closes on Escape. Keyboard focus screenshots are included below. A screen-reader usability study was not performed.
-- At 375px, and at 640px and 320px CSS viewport widths, all five rendered screen/role routes had no document-level horizontal overflow and no visible control below 24px. These are **viewport-width checks, not browser-zoom tests**.
-- The Project Officer dashboard was checked at actual Microsoft Edge browser zoom of 200% (the browser Zoom menu showed 200%). It reflowed to a single column with no visible horizontal overflow in the full-page capture. This is after-only evidence, not a before/after comparison. Other routes at 200% and all routes at 400% remain unverified. A true 400% browser-zoom check and screenshot are outstanding; the 320px viewport result must not be substituted for 400% zoom. Edge rendered a blank page on subsequent reloads, so no 400% result is claimed.
+- At 375px, and at 640px and 320px CSS viewport widths, all five rendered screen/role routes had no document-level horizontal overflow and no visible control below 24px. A further browser check at 375px covered all seven route variants (officer and manager) with no document-level horizontal overflow.
+- A browser check started at a 1280px viewport, applied actual 200% browser zoom (640 CSS px effective width), and found no document-level horizontal overflow on all seven route variants. The existing Project Officer dashboard screenshot remains supplemental after-only evidence, not a before/after comparison. All routes at 400% remain unverified; a 320px viewport result is not substituted for 400% zoom. No new screenshots were created for these checks.
 
 ## Evidence
 
