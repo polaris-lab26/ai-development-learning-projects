@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-IE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} | APR Review Hub</title>
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+{% from "_macros.html" import icon %}
+{% set nav_icons = {"dashboard": "home", "submit_report": "edit", "report_history": "document"} %}
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="demo-bar">
+    <div class="container">
+      <p><strong>Demonstration only.</strong> There is no sign-in. View the screens as:</p>
+      <ul>
+        {% for key, label in demo_roles.items() %}
+        <li><a href="{{ role_url(key) }}"{% if key == role %} aria-current="true"{% endif %}>{{ label }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <img class="header-art" src="{{ url_for('static', filename='img/header-art.svg') }}" alt="" width="330" height="280">
+    <div class="container header-inner">
+      <img class="globe" src="{{ url_for('static', filename='img/globe.svg') }}" alt="" width="150" height="150">
+      <p class="brand-org">Student<br>demonstrator</p>
+      <div class="brand-text">
+        <a class="brand-title" href="{{ url_for('dashboard') }}">APR Review Hub</a>
+        <p class="brand-sub">GCF Annual Performance Report Review</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-band">
+    <div class="container nav-inner">
+      <button class="nav-toggle btn btn--secondary" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Main">
+        <ul>
+          {% for endpoint, label, roles in nav_items if role in roles %}
+          <li><a href="{{ url_for(endpoint) }}"{% if request.endpoint == endpoint %} aria-current="page"{% endif %}>{{ icon(nav_icons[endpoint]) }}{{ label }}</a></li>
+          {% endfor %}
+        </ul>
+      </nav>
+      <p class="user-info"><span class="user-name">{{ user.name }}</span> <span class="user-role">({{ role_label }})</span></p>
+    </div>
+  </div>
+
+  <main id="main" class="container" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Student demonstrator. Not an official GCF system. All data shown is invented.</p>
+    </div>
+  </footer>
+
+  <dialog id="confirm-dialog" aria-labelledby="confirm-text">
+    <p id="confirm-text" class="dialog-text"></p>
+    <div class="dialog-actions">
+      <button type="button" id="confirm-cancel" class="btn btn--secondary">Cancel</button>
+      <button type="button" id="confirm-ok" class="btn btn--primary">Confirm</button>
+    </div>
+  </dialog>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

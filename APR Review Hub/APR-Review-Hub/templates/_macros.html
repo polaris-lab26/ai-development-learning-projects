@@ -1,0 +1,83 @@
+{#- Reusable pieces shared by the screens. -#}
+
+{#- Decorative inline icons (always hidden from assistive technology; a text label sits beside each). -#}
+{% macro icon(name) -%}
+{%- if name == "home" -%}
+<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 3 2 12h3v9h5v-6h4v6h5v-9h3z"/></svg>
+{%- elif name == "document" -%}
+<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h8l5 5v14H6z"/><path d="M14 2.5v5h5M9 13h7M9 17h7"/></svg>
+{%- elif name == "edit" -%}
+<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19.5 8.5l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>
+{%- elif name == "submitted" -%}
+<svg class="icon icon--tile" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect x="8" y="5" width="36" height="48" rx="4" fill="#fff"/><rect class="cut" x="15" y="15" width="22" height="4" rx="2"/><rect class="cut" x="15" y="25" width="22" height="4" rx="2"/><rect class="cut" x="15" y="35" width="12" height="4" rx="2"/><circle class="cut-stroke" cx="44" cy="44" r="14" fill="#fff" stroke-width="3.5"/><path class="cut-line" d="M44 36v8h6" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- elif name == "approved" -%}
+<svg class="icon icon--tile" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="28" fill="#fff"/><path class="cut-line" d="m19 33 9 9 17-19" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- elif name == "returned" -%}
+<svg class="icon icon--tile" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M26 6 6 20l20 14z" fill="#fff"/><path d="M20 20h24a13 13 0 0 1 0 26H30" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- endif -%}
+{%- endmacro %}
+
+{% macro status_badge(status) -%}
+<span class="badge badge--{{ status|lower }}"><span class="badge-icon" aria-hidden="true">{{ STATUSES[status] }}</span>{{ status }}</span>
+{%- endmacro %}
+
+{% macro when(moment) -%}
+<time datetime="{{ moment.isoformat(timespec='minutes') }}">{{ moment|dt }}</time>
+{%- endmacro %}
+
+{% macro report_action(report, role) -%}
+{% if role == "officer" and report.status == "Returned" -%}
+<a href="{{ url_for('submit_report', report_id=report.id) }}">Amend and resubmit<span class="sr-only"> {{ report.title }}</span></a>
+{%- elif role == "manager" and report.status == "Submitted" -%}
+<a href="{{ url_for('report_review', report_id=report.id) }}">Review<span class="sr-only"> {{ report.title }}</span></a>
+{%- endif %}
+{%- endmacro %}
+
+{% macro history_link(report) -%}
+<a href="{{ url_for('report_history', report=report.id, _anchor='report-' ~ report.id) }}">View history<span class="sr-only"> for {{ report.title }}</span></a>
+{%- endmacro %}
+
+{% macro field(name, label, values, errors, hint=None, kind="text", rows=7, required=True, tag="(required)") %}
+{%- set error = errors.get(name) %}
+{%- set value = values.get(name, "") %}
+{%- set describedby = ((name ~ "-hint") if hint else "") ~ (" " if hint and error else "") ~ ((name ~ "-error") if error else "") %}
+<div class="field">
+  <label for="f-{{ name }}">{{ label }} <span class="req">{{ tag }}</span></label>
+  {% if hint %}<p class="hint" id="{{ name }}-hint">{{ hint }}</p>{% endif %}
+  {% if kind == "textarea" -%}
+  <textarea id="f-{{ name }}" name="{{ name }}" rows="{{ rows }}" maxlength="1000"{% if required %} required{% endif %}{% if error %} aria-invalid="true"{% endif %}{% if describedby %} aria-describedby="{{ describedby }}"{% endif %}>{{ value }}</textarea>
+  {%- elif kind == "select" -%}
+  <select id="f-{{ name }}" name="{{ name }}"{% if required %} required{% endif %}{% if error %} aria-invalid="true"{% endif %}{% if describedby %} aria-describedby="{{ describedby }}"{% endif %}>
+    <option value="">Select a year</option>
+    {% for y in YEARS %}<option value="{{ y }}"{% if value|string == y|string %} selected{% endif %}>{{ y }}</option>{% endfor %}
+  </select>
+  {%- else -%}
+  <input type="text" id="f-{{ name }}" name="{{ name }}" value="{{ value }}"{% if required %} required{% endif %}{% if error %} aria-invalid="true"{% endif %}{% if describedby %} aria-describedby="{{ describedby }}"{% endif %}>
+  {%- endif %}
+  {% if error %}<p class="error-msg" id="{{ name }}-error"><span class="sr-only">Error: </span>{{ error }}</p>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro error_summary(errors) %}
+<div class="banner banner--error" id="error-summary" role="alert" tabindex="-1" aria-labelledby="error-summary-title">
+  <span class="banner-icon" aria-hidden="true">!</span>
+  <div>
+    <h2 id="error-summary-title">There is a problem</h2>
+    <ul>
+      {% for name, text in errors.items() %}<li><a href="#f-{{ name }}">{{ text }}</a></li>{% endfor %}
+    </ul>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro timeline(entries) %}
+<ol class="timeline">
+  {% for e in entries %}
+  <li>
+    <p class="timeline-head"><strong>{{ e.action }}</strong> by {{ e.name }} ({{ e.role }})</p>
+    <p class="timeline-time">{{ when(e.at) }}</p>
+    {% if e.comment %}<p class="comment">Comment: {{ e.comment }}</p>{% endif %}
+  </li>
+  {% endfor %}
+</ol>
+{% endmacro %}

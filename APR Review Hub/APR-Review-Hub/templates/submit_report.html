@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field, error_summary, when, history_link %}
+{% set heading = "Amend and resubmit report" if report else "Submit report" %}
+{% block title %}{{ heading }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>{{ heading }}</h1>
+    <p class="lead">
+      {% if report %}{{ report.title }}. Update the report in response to the comment below.
+      {% else %}Prepare your Annual Performance Report. All fields are required.{% endif %}
+    </p>
+  </div>
+</div>
+
+{% if returned %}
+<section class="card card--returned" aria-labelledby="returned-title">
+  <h2 id="returned-title">Returned for changes</h2>
+  <p>Returned by {{ returned.name }} on {{ when(returned.at) }}.</p>
+  <p class="comment">Comment: {{ returned.comment }}</p>
+  <p>{{ history_link(report) }}</p>
+</section>
+{% endif %}
+
+{% if errors %}{{ error_summary(errors) }}{% endif %}
+
+<form method="post" class="card form" novalidate data-confirm-form>
+  {{ field("project_name", "Project name", values, errors) }}
+  {{ field("year", "Reporting year", values, errors, kind="select") }}
+  {% set hint = "Describe the project only. Do not include personal details about individuals. Maximum 1,000 characters." %}
+  {% for name, label in TEXT_FIELDS %}
+  {{ field(name, label, values, errors, hint=hint, kind="textarea") }}
+  {% endfor %}
+
+  <div class="form-actions">
+    <button class="btn btn--primary" type="submit"
+            data-confirm="{{ 'Resubmit this report for review?' if report else 'Submit this report for review?' }}">
+      {{ "Resubmit report" if report else "Submit report" }}
+    </button>
+    <a class="btn btn--text" href="{{ url_for('dashboard') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

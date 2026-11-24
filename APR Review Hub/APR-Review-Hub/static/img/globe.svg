@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<defs>
+<clipPath id="disc"><circle cx="100" cy="100" r="96"/></clipPath>
+</defs>
+<circle cx="100" cy="100" r="96" fill="#1b6e47"/>
+<g clip-path="url(#disc)">
+<path d="M30 70C40 40 80 30 105 45C120 55 110 75 90 80C75 84 70 100 55 102C40 104 25 95 30 70Z" fill="#8cc152"/>
+<path d="M135 48C150 42 168 55 165 70C162 82 140 80 133 68C129 60 129 52 135 48Z" fill="#6bb85a"/>
+<path d="M105 120C125 105 160 110 172 135C180 155 150 175 125 172C105 169 92 140 105 120Z" fill="#4fae86"/>
+<g fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="2">
+<ellipse cx="100" cy="100" rx="44" ry="96"/>
+<ellipse cx="100" cy="100" rx="78" ry="96"/>
+<path d="M4 100H196"/>
+<path d="M10 62Q100 82 190 62"/>
+<path d="M10 138Q100 118 190 138"/>
+</g>
+</g>
+<circle cx="100" cy="100" r="96" fill="none" stroke="#0b391a" stroke-width="4"/>
+</svg>

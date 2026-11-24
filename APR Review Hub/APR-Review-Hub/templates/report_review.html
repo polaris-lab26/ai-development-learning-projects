@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge, field, error_summary, when, history_link %}
+{% block title %}Report Review{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Report review</h1>
+    <p class="lead">{{ report.title }}</p>
+  </div>
+  {{ status_badge(report.status) }}
+</div>
+
+<section class="card" aria-labelledby="report-title">
+  <h2 id="report-title">Report details</h2>
+  <dl class="details">
+    <div><dt>Project name</dt><dd>{{ report.project_name }}</dd></div>
+    <div><dt>Reporting year</dt><dd>{{ report.year }}</dd></div>
+    <div><dt>Submitted by</dt><dd>{{ report.owner_name }}</dd></div>
+    <div><dt>Submitted on</dt><dd>{{ when(report.submitted_at) }}</dd></div>
+    {% for name, label in TEXT_FIELDS %}
+    <div class="details-long"><dt>{{ label }}</dt><dd>{{ report[name] }}</dd></div>
+    {% endfor %}
+  </dl>
+</section>
+
+{% if report.status == "Submitted" and report.returns %}
+<section class="card" aria-labelledby="previous-title">
+  <h2 id="previous-title">Previous decisions</h2>
+  <ul class="plain-list">
+    {% for r in report.returns %}
+    <li>Returned by {{ r.name }} on {{ when(r.at) }}. <span class="comment">Comment: {{ r.comment }}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if report.status == "Submitted" %}
+{% if errors %}{{ error_summary(errors) }}{% endif %}
+<section class="card" aria-labelledby="decision-title">
+  <h2 id="decision-title">Your decision</h2>
+  <form method="post" class="form" novalidate data-confirm-form>
+    {{ field("comment", "Comment", {"comment": comment}, errors, kind="textarea", rows=5, required=False,
+             tag="(required to return, optional to approve)",
+             hint="Explain what the Project Officer needs to change. Maximum 1,000 characters.") }}
+    <div class="form-actions">
+      <button class="btn btn--primary" type="submit" name="decision" value="approve"
+              data-confirm="Approve this report?">Approve</button>
+      <button class="btn btn--secondary" type="submit" name="decision" value="return"
+              data-confirm="Return this report with your comment?" data-needs="comment">Return with comment</button>
+    </div>
+  </form>
+</section>
+{% else %}
+<section class="card" aria-labelledby="decision-title">
+  <h2 id="decision-title">Decision</h2>
+  <p>{{ status_badge(report.decision.action) }}
+     by {{ report.decision.name }} on {{ when(report.decision.at) }}.</p>
+  {% if report.decision.comment %}<p class="comment">Comment: {{ report.decision.comment }}</p>{% endif %}
+  <p>This report has been decided, so no further action is available.</p>
+</section>
+{% endif %}
+
+<p class="page-links">
+  <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+  {{ history_link(report) }}
+</p>
+{% endblock %}

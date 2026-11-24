@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge, when, timeline, report_action %}
+{% block title %}Report History{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Report history</h1>
+    <p class="lead">
+      {% if role == "officer" %}A record of who did what, and when, on your reports.
+      {% else %}A record of who did what, and when, on all reports.{% endif %}
+    </p>
+  </div>
+</div>
+
+<form method="get" class="card filter" action="{{ url_for('report_history') }}">
+  <input type="hidden" name="role" value="{{ role }}">
+  <div class="field">
+    <label for="f-status">Filter by status</label>
+    <select id="f-status" name="status">
+      <option value="">All statuses</option>
+      {% for s in STATUSES %}<option value="{{ s }}"{% if s == status %} selected{% endif %}>{{ s }}</option>{% endfor %}
+    </select>
+  </div>
+  <button class="btn btn--secondary" type="submit">Apply filter</button>
+</form>
+
+<h2 class="list-heading">{{ reports|length }} report{{ "" if reports|length == 1 else "s" }}{% if status %} with status {{ status }}{% endif %}</h2>
+
+{% if reports %}
+<ul class="history-list">
+  {% for r in reports %}
+  <li>
+    <details class="card history-item" id="report-{{ r.id }}"{% if r.id == open_id %} open{% endif %}>
+      <summary>
+        <span class="history-title">{{ r.title }}</span>
+        {{ status_badge(r.status) }}
+        <span class="history-meta">Last action: {{ when(r.updated) }}</span>
+      </summary>
+      <div class="history-body">
+        {{ timeline(r.timeline) }}
+        <p>{{ report_action(r, role) }}</p>
+      </div>
+    </details>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">No reports match this filter.</p>
+{% endif %}
+{% endblock %}

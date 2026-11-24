@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge, when, report_action, history_link, icon %}
+{% set tile_text = {"Submitted": "Awaiting review", "Approved": "Decision complete", "Returned": "Action required"} %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="lead">
+      {% if role == "officer" %}Your Annual Performance Reports and what needs your attention.
+      {% else %}Reports waiting for your review and recent decisions.{% endif %}
+    </p>
+  </div>
+  {% if role == "officer" %}
+  <a class="btn btn--primary" href="{{ url_for('submit_report') }}">Submit new report</a>
+  {% endif %}
+</div>
+
+{% if notice %}
+<div class="banner banner--success" role="status">
+  <span class="banner-icon" aria-hidden="true">✓</span>
+  <p>{{ notice }}{{ notice_note }}</p>
+</div>
+{% endif %}
+
+<section aria-labelledby="counts-title">
+  <h2 id="counts-title" class="sr-only">Report counts</h2>
+  <ul class="tiles">
+    {% for status in ["Submitted", "Approved", "Returned"] %}
+    <li class="tile tile--{{ status|lower }}">
+      {{ icon(status|lower) }}
+      <span class="tile-text">
+        <span class="tile-title">{{ status }}</span>
+        <span class="tile-sub">{{ tile_text[status] }}</span>
+      </span>
+      <span class="tile-count">{{ counts[status] }}<span class="sr-only"> report{{ "" if counts[status] == 1 else "s" }}</span></span>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% if role == "officer" %}
+<section class="card" aria-labelledby="reports-title">
+  <h2 id="reports-title">Your reports</h2>
+  {% if reports %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Report</th>
+        <th scope="col">Reporting year</th>
+        <th scope="col">Status</th>
+        <th scope="col">Last updated</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reports %}
+      <tr>
+        <td>
+          <strong>{{ r.title }}</strong>
+          {% if r.get("session_only") %}
+          <span class="row-note">Visible in this browser session only; not permanently saved.</span>
+          {% endif %}
+          {% if r.status == "Returned" %}
+          <span class="row-note">Comment from {{ r.returns[-1].name }}: {{ r.returns[-1].comment|truncate(90) }}</span>
+          {% endif %}
+        </td>
+        <td data-label="Reporting year">{{ r.year }}</td>
+        <td data-label="Status">{{ status_badge(r.status) }}</td>
+        <td data-label="Last updated">{{ when(r.updated) }}</td>
+        <td data-label="Actions"><div class="row-actions">
+          {% if r.get("session_only") %}Session-only demonstration
+          {% else %}{{ report_action(r, role) }}{{ history_link(r) }}{% endif %}
+        </div></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">You have no reports yet. Choose "Submit new report" to start.</p>
+  {% endif %}
+</section>
+
+{% else %}
+<section class="card" aria-labelledby="waiting-title">
+  <h2 id="waiting-title">Waiting for review</h2>
+  {% if waiting %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Report</th>
+        <th scope="col">Submitted by</th>
+        <th scope="col">Submitted on</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in waiting %}
+      <tr>
+        <td><strong>{{ r.title }}</strong></td>
+        <td data-label="Submitted by">{{ r.owner_name }}</td>
+        <td data-label="Submitted on">{{ when(r.submitted_at) }}</td>
+        <td data-label="Actions"><div class="row-actions">{{ report_action(r, role) }}{{ history_link(r) }}</div></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">No reports are waiting for review.</p>
+  {% endif %}
+</section>
+
+<section class="card" aria-labelledby="decided-title">
+  <h2 id="decided-title">Recently decided</h2>
+  {% if decided %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Report</th>
+        <th scope="col">Decision</th>
+        <th scope="col">Decided on</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in decided %}
+      <tr>
+        <td><strong>{{ r.title }}</strong></td>
+        <td data-label="Decision">{{ status_badge(r.status) }}</td>
+        <td data-label="Decided on">{{ when(r.updated) }}</td>
+        <td data-label="Actions"><div class="row-actions">{{ history_link(r) }}</div></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">No decisions have been made yet.</p>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}
