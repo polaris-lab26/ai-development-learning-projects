@@ -6,7 +6,7 @@
 
 ## Course instructions and scoring
 
-The available Week 06 Directed Learning brief says to score the interface against **Nielsen's ten heuristics**, with one line of evidence for each. It does not specify a score scale. This review uses 0-5 per heuristic (50 points maximum), matching the existing evidence and the assessment's 50-point maximum. The later five-heuristic fallback therefore does not apply.
+The available Week 06 Directed Learning brief says to score the interface against **Nielsen's ten heuristics**, with one line of evidence for each. It does not specify a score scale. This review scores each heuristic from 1-5 (50 points maximum), consistent with the assessment's 50-point maximum. The later five-heuristic fallback therefore does not apply.
 
 The before state is the dated 19 Nov screenshot set and review notes: the interface after its reference-image redesign but before the documented Week Six accessibility refinements. It is **not** presented as the original ivory/terracotta concept. No earlier runnable code or Git baseline was available. Scores are one reviewer’s reasoned judgement, not a usability study or measured user outcome.
 
